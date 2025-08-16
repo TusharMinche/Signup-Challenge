@@ -3,15 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SignUp challenge</title>
+    <title>SignUp Challenge</title>
 
-    <!--CSS is linked here-->
     <style>
       * {
         padding: 0;
         margin: 0;
         box-sizing: border-box;
-        background-color: #fdf3e7; /* softer cream */
+        background-color: #fdf3e7;
         font-family: "Inter", sans-serif;
         overflow-x: hidden;
       }
@@ -26,10 +25,9 @@
 
       .form {
         width: 498px;
-        height: 250px;
         background-color: white;
         box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
-        padding: 0px 25px;
+        padding: 20px 25px;
         border-radius: 6px;
       }
 
@@ -72,7 +70,7 @@
         background-color: white;
         font-size: 13px;
         font-weight: 500;
-        margin-top: 15px;
+        margin-top: 20px;
         cursor: pointer;
         transition: background-color 0.2s, transform 0.1s;
       }
@@ -99,13 +97,11 @@
         color: #2bbd56;
         background-color: white;
         margin-top: 18px;
-        margin-left: 2px;
       }
 
       @media screen and (max-width: 532px) {
         .form {
           width: 390px;
-          height: 290px;
         }
         input {
           width: 265px;
@@ -115,118 +111,108 @@
       @media screen and (max-width: 428px) {
         .form {
           width: 315px;
-          height: 290px;
         }
         input {
           width: 265px;
         }
       }
     </style>
-
-    <!--Google font linked here-->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap"
-      rel="stylesheet"
-    />
   </head>
   <body>
-    <!--This section contain form element-->
-
     <section id="main">
       <div class="form">
-        <form
-          action="submit"
-          method="post"
-          id="form_element"
-          onchange="allGoodToGo()"
-        >
+        <form id="form_element">
           <label for="email">Email</label>
-
           <input
             type="text"
             id="email"
             placeholder="Example@email.com"
-            onchange="checkEmail()"
+            oninput="validateForm()"
           />
           <p class="wrong" id="para1">
             Make sure email is more than 3 characters and has @ and a .
           </p>
 
           <label for="password">Password</label>
-
           <input
-            type="text"
+            type="password"
             id="password"
             placeholder="Your Password"
-            onchange="checkPassword()"
+            oninput="validateForm()"
           />
           <p class="wrong" id="para2">
             Make sure password is more than 8 characters.
           </p>
+
+          <p id="allGood" class="correct" style="display: none">
+            All good to go!
+          </p>
+
+          <button type="button" onclick="confirmWindow()">Submit</button>
         </form>
-        <button class="submit" onclick="confirmWindow()">Submit</button>
       </div>
     </section>
 
     <script>
-      //This function check if both email and password are valid or not and id valid than return All good to go!.
-      function allGoodToGo() {
-        let form = document.querySelector("#form_element");
-        let emailValid = checkEmail();
-        let passwordValid = checkPassword();
-
-        if (emailValid && passwordValid) {
-          let allGoodPara = document.createElement("p");
-          allGoodPara.classList.add("correct");
-          allGoodPara.innerText = `All good to go!`;
-
-          form.appendChild(allGoodPara);
-        }
-      }
-
-      //This is the function which check if email is valid or not and return true if email is valid.
       function checkEmail() {
-        let inputValue = document.getElementById("email").value;
-        let errorPara = document.querySelector("#para1");
+        let inputValue = document.getElementById("email").value.trim();
+        let errorPara = document.getElementById("para1");
 
         if (
-          inputValue.length > 2 &&
+          inputValue.length > 3 &&
           inputValue.includes("@") &&
           inputValue.includes(".")
         ) {
-          errorPara.style.display = `none`;
+          errorPara.style.display = "none";
           return true;
         } else {
-          errorPara.style.display = `block`;
+          errorPara.style.display = "block";
           return false;
         }
       }
 
-      //This is the function which check if password is valid or not and return true if password is valid.
       function checkPassword() {
         let inputValue2 = document.getElementById("password").value;
         let errorPara2 = document.getElementById("para2");
 
-        if (inputValue2.length > 7) {
-          errorPara2.style.display = `none`;
+        if (inputValue2.length > 8) {
+          errorPara2.style.display = "none";
           return true;
         } else {
-          errorPara2.style.display = `block`;
+          errorPara2.style.display = "block";
           return false;
         }
       }
 
-      //This function give alert message if user confirm that his entries are true.
-      function confirmWindow() {
-        let confirm = window.confirm("Are you sure you want to submit?");
+      function validateForm() {
+        let emailValid = checkEmail();
+        let passwordValid = checkPassword();
+        let allGoodPara = document.getElementById("allGood");
 
-        if (confirm === true) {
-          alert("successful signup!");
+        if (emailValid && passwordValid) {
+          allGoodPara.style.display = "block";
         } else {
-          //At first I have written all the code to hidded the good to go and para and to display error code but then I remember this code from the course so I use it because it is simple.
-          location.reload();
+          allGoodPara.style.display = "none";
+        }
+      }
+
+      function confirmWindow() {
+        // Re-validate before submission
+        if (!checkEmail() || !checkPassword()) {
+          alert("Please fix errors before submitting.");
+          return;
+        }
+
+        let confirmAction = window.confirm(
+          "Are you sure you want to submit?"
+        );
+
+        if (confirmAction) {
+          alert("Successful signup!");
+        } else {
+          // reset form and reload to clear inputs
+          document.getElementById("form_element").reset();
+          validateForm(); // clear messages
         }
       }
     </script>

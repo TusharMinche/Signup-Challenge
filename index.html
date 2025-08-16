@@ -54,12 +54,23 @@
         color: black;
         margin-top: 5px;
         padding: 8px 12px;
-        transition: border-color 0.2s;
+        transition: border-color 0.2s, box-shadow 0.2s;
       }
 
       input:focus {
         outline: none;
         border-color: #0077cc;
+      }
+
+      /* Visual feedback */
+      .valid {
+        border-color: #2bbd56 !important;
+        box-shadow: 0 0 4px #2bbd56;
+      }
+
+      .invalid {
+        border-color: #ff3b3b !important;
+        box-shadow: 0 0 4px #ff3b3b;
       }
 
       button {
@@ -155,31 +166,41 @@
 
     <script>
       function checkEmail() {
-        let inputValue = document.getElementById("email").value.trim();
+        let input = document.getElementById("email");
+        let value = input.value.trim();
         let errorPara = document.getElementById("para1");
 
         if (
-          inputValue.length > 3 &&
-          inputValue.includes("@") &&
-          inputValue.includes(".")
+          value.length > 3 &&
+          value.includes("@") &&
+          value.includes(".")
         ) {
           errorPara.style.display = "none";
+          input.classList.remove("invalid");
+          input.classList.add("valid");
           return true;
         } else {
           errorPara.style.display = "block";
+          input.classList.remove("valid");
+          input.classList.add("invalid");
           return false;
         }
       }
 
       function checkPassword() {
-        let inputValue2 = document.getElementById("password").value;
+        let input = document.getElementById("password");
+        let value = input.value;
         let errorPara2 = document.getElementById("para2");
 
-        if (inputValue2.length > 8) {
+        if (value.length > 8) {
           errorPara2.style.display = "none";
+          input.classList.remove("invalid");
+          input.classList.add("valid");
           return true;
         } else {
           errorPara2.style.display = "block";
+          input.classList.remove("valid");
+          input.classList.add("invalid");
           return false;
         }
       }
@@ -197,7 +218,6 @@
       }
 
       function confirmWindow() {
-        // Re-validate before submission
         if (!checkEmail() || !checkPassword()) {
           alert("Please fix errors before submitting.");
           return;
@@ -210,9 +230,10 @@
         if (confirmAction) {
           alert("Successful signup!");
         } else {
-          // reset form and reload to clear inputs
           document.getElementById("form_element").reset();
-          validateForm(); // clear messages
+          validateForm(); // reset validation states
+          document.getElementById("email").classList.remove("valid", "invalid");
+          document.getElementById("password").classList.remove("valid", "invalid");
         }
       }
     </script>
